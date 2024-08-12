@@ -32,6 +32,24 @@ class TaskModel {
     required this.status,
   });
 
+  TaskModel copyWith({
+    int? id,
+    String? title,
+    String? body,
+    Corridor? corridor,
+    int? priority,
+    TaskType? status,
+  }) {
+    return TaskModel(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      body: body ?? this.body,
+      corridor: corridor ?? this.corridor,
+      priority: priority ?? this.priority,
+      status: status ?? this.status,
+    );
+  }
+
   factory TaskModel.fromJson(Map<String, dynamic> json) {
     return TaskModel(
       id: json['id'],

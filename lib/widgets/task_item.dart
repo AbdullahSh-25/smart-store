@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_store/core/utils/functions.dart';
 
 enum TaskType {
   todo('todo'),
@@ -49,6 +50,7 @@ class _TaskItemState extends State<TaskItem> {
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: onTaskType(
+                taskType: widget.taskType,
                 todo: Colors.amber,
                 inProgress: Colors.blueAccent,
                 done: Colors.green,
@@ -71,6 +73,7 @@ class _TaskItemState extends State<TaskItem> {
                       Row(
                         children: [
                           onTaskType(
+                            taskType: widget.taskType,
                             todo: const Icon(
                               Icons.access_time_outlined,
                               color: Colors.amber,
@@ -119,15 +122,22 @@ class _TaskItemState extends State<TaskItem> {
                             onPressed: widget.onTap,
                             style: ElevatedButton.styleFrom(
                               surfaceTintColor: onTaskType(
+                                taskType: widget.taskType,
                                 todo: Colors.amber,
                                 inProgress: Colors.blueAccent,
                                 done: Colors.green,
                               ),
                             ),
                             child: Text(
-                              onTaskType(todo: 'قبول', inProgress: 'إنهاء', done: ''),
+                              onTaskType(
+                                taskType: widget.taskType,
+                                todo: 'قبول',
+                                inProgress: 'إنهاء',
+                                done: '',
+                              ),
                               style: TextStyle(
                                 color: onTaskType(
+                                  taskType: widget.taskType,
                                   todo: Colors.orange,
                                   inProgress: Colors.blueAccent,
                                   done: Colors.green,
@@ -145,16 +155,5 @@ class _TaskItemState extends State<TaskItem> {
         ),
       ),
     );
-  }
-
-  T onTaskType<T>({required T todo, required T inProgress, required T done}) {
-    switch (widget.taskType) {
-      case TaskType.todo:
-        return todo;
-      case TaskType.inProgress:
-        return inProgress;
-      case TaskType.done:
-        return done;
-    }
   }
 }

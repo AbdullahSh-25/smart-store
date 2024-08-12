@@ -1,13 +1,12 @@
 import 'dart:async';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:smart_store/core/utils/functions.dart';
 import 'package:smart_store/data/remote_data_source.dart';
 import 'package:smart_store/generated/assets.dart';
-import 'package:smart_store/network/http_client.dart';
 import 'package:smart_store/state/task_bloc/task_bloc.dart';
 
-import '../core/constants/app_urls.dart';
 import '../data/model/task_model.dart';
 import '../widgets/task_item.dart';
 
@@ -21,7 +20,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-
   late final TaskBloc bloc;
 
   @override
@@ -87,10 +85,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     TaskList(
                                       tasks: state.todo,
                                       taskType: TaskType.todo,
-                                      onTaskTap: (task) {
+                                      onTaskTap: (task,i) {
                                         context.read<TaskBloc>().add(
                                               ChangeTaskStatus(
                                                 taskId: task.id,
+                                                index: i,
                                                 taskType: TaskType.inProgress,
                                                 onSuccess: () {},
                                                 onFail: () {},
@@ -101,10 +100,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     TaskList(
                                       tasks: state.inProgress,
                                       taskType: TaskType.inProgress,
-                                      onTaskTap: (task) {
+                                      onTaskTap: (task,i) {
                                         context.read<TaskBloc>().add(
                                               ChangeTaskStatus(
                                                 taskId: task.id,
+                                                index: i,
                                                 taskType: TaskType.done,
                                                 onSuccess: () {},
                                                 onFail: () {},
@@ -115,10 +115,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     TaskList(
                                       tasks: state.done,
                                       taskType: TaskType.done,
-                                      onTaskTap: (task) {
+                                      onTaskTap: (task,i) {
                                         context.read<TaskBloc>().add(
                                               ChangeTaskStatus(
                                                 taskId: task.id,
+                                                index: i,
                                                 taskType: TaskType.inProgress,
                                                 onSuccess: () {},
                                                 onFail: () {},
@@ -146,7 +147,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
 class TaskList extends StatelessWidget {
   final List<TaskModel> tasks;
-  final void Function(TaskModel) onTaskTap;
+  final void Function(TaskModel,int) onTaskTap;
   final TaskType taskType;
 
   const TaskList({
@@ -158,23 +159,42 @@ class TaskList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      itemCount: tasks.length,
-      padding: const EdgeInsets.only(top: 16),
-      itemBuilder: (context, i) {
-        final task = tasks[i];
-        return TaskItem(
-          onTap: () {
-            onTaskTap(task);
-          },
-          name: task.title,
-          description: task.body,
-          taskType: taskType,
-        );
-      },
-      separatorBuilder: (context, i) {
-        return const SizedBox(height: 8);
-      },
-    );
+    if (tasks.isNotEmpty) {
+      return ListView.separated(
+        itemCount: tasks.length,
+        padding: const EdgeInsets.only(top: 16),
+        itemBuilder: (context, i) {
+          final task = tasks[i];
+          return TaskItem(
+            onTap: () {
+              onTaskTap(task,i);
+            },
+            name: task.title,
+            description: task.body,
+            taskType: taskType,
+          );
+        },
+        separatorBuilder: (context, i) {
+          return const SizedBox(height: 8);
+        },
+      );
+    } else {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SvgPicture.asset(Assets.svgNoItems),
+          const SizedBox(height: 16),
+          Text(
+            onTaskType(
+              taskType: taskType,
+              todo: 'لا يوجد مهام مسندة إليك',
+              inProgress: 'لا يوجد مهام قيد التنفيذ',
+              done: 'لم تقم بإكمال مهمة بعد',
+            ),
+            style: const TextStyle(fontSize: 24),
+          ),
+        ],
+      );
+    }
   }
 }

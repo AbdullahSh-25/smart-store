@@ -116,9 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 child: SizedBox(
                                   width: context.fullWidth * 0.65,
                                   height: context.fullWidth * 0.65,
-                                  child: const QrCodeScanner(
-                                      // controller: qrController,
-                                      ),
+                                  child: const QrCodeScanner(),
                                 ),
                               ),
                             ),

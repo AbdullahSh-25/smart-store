@@ -13,7 +13,9 @@ class RemoteDataSource {
   const RemoteDataSource(this.dioClient);
 
   Future<Either<String, List<TaskModel>>> getAllTasks() async {
-    final response = await dioClient.get('employees/task/get-all-tasks');
+    final response = await dioClient.get('employees/task/get-all-tasks',queryParameters: {
+      'paginate': 50,
+    });
     debugPrint(response.statusCode.toString());
     debugPrint(response.data.toString());
     if (response.statusCode == 200) {

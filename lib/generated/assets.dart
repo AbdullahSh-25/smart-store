@@ -2,7 +2,8 @@
 class Assets {
   Assets._();
 
-  static const String audioNewTask = 'assets/audio/new_task.mp3';
+  static const String audiosNewTask = 'assets/audios/new_task.mp3';
   static const String fontsTajwalFont = 'assets/fonts/tajwal_font.ttf';
+  static const String svgNoItems = 'assets/images/svg/no_items.svg';
 
 }
